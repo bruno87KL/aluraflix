@@ -124,6 +124,31 @@ function toggleTheme() {
 </script>
 </body>
 <body>
+<video id="meuVideo" width="640" controls>
+  <source src="seu-video.mp4" type="video/mp4">
+  Seu navegador não suporta vídeo HTML5.
+</video>
+
+<script>
+  const video = document.getElementById("meuVideo");
+  let maxWatched = 0;
+
+  // Atualiza o ponto máximo já assistido
+  video.addEventListener("timeupdate", () => {
+    if (video.currentTime > maxWatched) {
+      maxWatched = video.currentTime;
+    }
+  });
+
+  // Impede pular adiantado
+  video.addEventListener("seeking", () => {
+    if (video.currentTime > maxWatched + 0.1) {
+      // volta para o ponto máximo permitido
+      video.currentTime = maxWatched;
+    }
+  });
+</script>
+<body>
     <header>Os melhores filmes de 2025</header>
     <h1>VEJA AQUI NESSE SITE OS MELHORES FILMES DE 2025</h1>
     <p>#filmes</p>
