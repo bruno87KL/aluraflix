@@ -1,70 +1,91 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Botões de Scroll</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Scroll Helpers</title>
 <style>
-    body {
-        height: 2000px; /* altura extra para poder testar o scroll */
-        background: linear-gradient(#111, #333);
-        color: white;
-        font-family: Arial, sans-serif;
-    }
+  /* Não altera o fundo nem altura da página: só adiciona os botões */
+  .scroll-btn {
+    position: fixed;
+    right: 16px;
+    width: 42px;
+    height: 42px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    transition: background .2s, opacity .3s;
+    z-index: 999; /* acima do conteúdo, mas não exagerado */
+    backdrop-filter: blur(4px);
+  }
 
-    .scroll-btn {
-        position: fixed;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        background: #444;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        font-size: 20px;
-        cursor: pointer;
-        box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        transition: background 0.3s;
-    }
+  .scroll-btn:hover {
+    background: rgba(0,0,0,0.75);
+  }
 
-    .scroll-btn:hover {
-        background: #666;
-    }
+  #upBtn { bottom: 80px; }
+  #downBtn { bottom: 20px; }
 
-    #upBtn {
-        bottom: 80px;
-    }
-
-    #downBtn {
-        bottom: 20px;
-    }
+  /* Esconde se não fizer sentido (ex: topo ou fim) */
+  .hidden { opacity: 0; pointer-events: none; }
 </style>
 </head>
 <body>
-<!-- Botão para subir -->
-<button id="upBtn" class="scroll-btn">▲</button>
 
-<!-- Botão para descer -->
-<button id="downBtn" class="scroll-btn">▼</button>
+<!-- Seus conteúdos normais aqui -->
+
+<!-- Botões de scroll -->
+<button id="upBtn" class="scroll-btn" aria-label="Rolar para cima">▲</button>
+<button id="downBtn" class="scroll-btn" aria-label="Rolar para baixo">▼</button>
 
 <script>
-    document.getElementById("upBtn").addEventListener("click", function() {
-        window.scrollBy({
-            top: -200, // rola 200px para cima
-            behavior: 'smooth'
-        });
-    });
+  const up = document.getElementById("upBtn");
+  const down = document.getElementById("downBtn");
+  const scrollAmount = 250; // ajuste quanto rola por clique
 
-    document.getElementById("downBtn").addEventListener("click", function() {
-        window.scrollBy({
-            top: 200, // rola 200px para baixo
-            behavior: 'smooth'
-        });
-    });
+  function updateVisibility() {
+    const scrollY = window.scrollY;
+    const maxY = document.documentElement.scrollHeight - window.innerHeight;
+
+    // se estiver no topo, esconde o "up"; se no fundo, esconde o "down"
+    if (scrollY <= 5) {
+      up.classList.add("hidden");
+    } else {
+      up.classList.remove("hidden");
+    }
+
+    if (scrollY >= maxY - 5) {
+      down.classList.add("hidden");
+    } else {
+      down.classList.remove("hidden");
+    }
+  }
+
+  up.addEventListener("click", () => {
+    window.scrollBy({ top: -scrollAmount, behavior: "smooth" });
+  });
+
+  down.addEventListener("click", () => {
+    window.scrollBy({ top: scrollAmount, behavior: "smooth" });
+  });
+
+  // atualiza visibilidade ao carregar e ao rolar
+  window.addEventListener("scroll", updateVisibility);
+  window.addEventListener("load", updateVisibility);
+  // também no resize porque o maxY pode mudar
+  window.addEventListener("resize", updateVisibility);
 </script>
-</body>
 
 </body>
+    
 <!DOCTYPE html>
    <html lang="pt-BR">
    <head>
