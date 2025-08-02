@@ -26,7 +26,43 @@
    <header>O melhor jogo em 4k SPIDER man</header>
    <h1>SPIDER man jogo em 4k</h1>
    <p>#Jogo</p>
-<body style="background-color:black; color:white;">
-  <h1>Meu site no GitHub Pages</h1>
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/vNyiTmtJqL4?si=7d6ATeNHuV6vfoi7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Troca de Tema</title>
+<style>
+  body {
+    background-color: white;
+    color: black;
+    transition: all 0.3s ease;
+  }
+  .dark-mode {
+    background-color: black;
+    color: white;
+  }
+  button {
+    padding: 10px 15px;
+    margin: 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Meu Site no GitHub Pages</h1>
+<p>Clique no botão para trocar o fundo.</p>
+<button onclick="toggleTheme()">🌙 Mudar Tema</button>
+
+<script>
+function toggleTheme() {
+  document.body.classList.toggle("dark-mode");
+}
+</script>
+
 </body>
 </html>
