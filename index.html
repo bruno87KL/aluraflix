@@ -212,6 +212,164 @@ function toggleTheme() {
 </script>
 </body>
 <body>
+<!-- Video component: suporta múltiplas fontes, fallback e retry automático -->
+<figure class="video-card" data-video-id="categoria1">
+  <video
+    id="video-categoria1"
+    class="video-player"
+    controls
+    preload="metadata"        <!-- não baixa tudo imediatamente -->
+    playsinline
+    poster="assets/poster-categoria1.jpg"
+    muted
+    crossorigin="anonymous"
+  >
+    <!-- Fontes em ordem: mais leves primeiro (fallback para maior qualidade) -->
+    <source data-res="360" src="videos/categoria1-360.mp4" type="video/mp4">
+    <source data-res="720" src="videos/categoria1-720.mp4" type="video/mp4">
+    <source data-res="1080" src="videos/categoria1-1080.mp4" type="video/mp4">
+    <!-- WebM como alternativa quando disponível -->
+    <source data-res="720" src="videos/categoria1-720.webm" type="video/webm">
+    Seu navegador não suporta vídeo HTML5.
+  </video>
+
+  <figcaption class="video-status" id="status-categoria1">
+    <span class="msg">Pronto</span>
+    <button class="retry-btn" style="display:none">Tentar novamente</button>
+  </figcaption>
+</figure>
+
+<script>
+/*
+  retryVideoLoad: tenta carregar repetidamente fontes diferentes com backoff exponencial.
+  - element: elemento <video>
+  - opts.maxAttempts: quantas tentativas por fonte
+*/
+function retryVideoLoad(element, opts = {}) {
+  const maxAttemptsPerSource = opts.maxAttemptsPerSource || 2;
+  const baseDelay = opts.baseDelay || 700; // ms
+  const statusEl = document.getElementById('status-' + element.id.split('video-')[1]);
+  const retryBtn = statusEl.querySelector('.retry-btn');
+  const msgEl = statusEl.querySelector('.msg');
+
+  // Coloca sources em array (mantém a ordem do DOM)
+  const sources = Array.from(element.querySelectorAll('source')).map(s => ({
+    src: s.getAttribute('src'),
+    type: s.getAttribute('type'),
+    res: s.getAttribute('data-res')
+  }));
+
+  let sourceIndex = 0;
+  let attempt = 0;
+
+  function setStatus(text, showRetry=false) {
+    msgEl.textContent = text;
+    retryBtn.style.display = showRetry ? 'inline-block' : 'none';
+  }
+
+  // Tenta carregar a fonte atual
+  function tryCurrentSource() {
+    if (!navigator.onLine) {
+      setStatus('Sem conexão. Aguardando rede...', true);
+      return;
+    }
+
+    const current = sources[sourceIndex];
+    if (!current) {
+      setStatus('Erro ao carregar o vídeo. Nenhuma fonte válida.', true);
+      return;
+    }
+
+    setStatus(`Carregando ${current.res}p... (tentativa ${attempt+1})`);
+    // Remove todas as fontes e define apenas a atual (força carregamento da escolha)
+    element.pause();
+    while (element.firstChild) element.removeChild(element.firstChild);
+    const srcEl = document.createElement('source');
+    srcEl.src = current.src;
+    srcEl.type = current.type || 'video/mp4';
+    element.appendChild(srcEl);
+
+    // Força reload
+    element.load();
+
+    // Tenta reproduzir (apenas para testar se carregou corretamente)
+    const playPromise = element.play();
+    // play() pode rejeitar por autoplay policy; ignoramos essa rejeição
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(()=>{}); 
+    }
+  }
+
+  function onError() {
+    attempt++;
+    if (attempt <= maxAttemptsPerSource) {
+      // re-tentar mesma fonte com backoff
+      const delay = Math.min(5000, baseDelay * Math.pow(2, attempt));
+      setStatus(`Erro ao carregar (tentando de novo em ${Math.round(delay/1000)}s)...`);
+      setTimeout(tryCurrentSource, delay);
+      return;
+    }
+    // se esgotou tentativas para essa fonte, passa para a próxima
+    sourceIndex++;
+    attempt = 0;
+    if (sourceIndex < sources.length) {
+      setStatus('Tentando fonte alternativa...');
+      setTimeout(tryCurrentSource, 500);
+    } else {
+      setStatus('Todas as fontes falharam — verifique sua conexão.', true);
+    }
+  }
+
+  function onLoadedMetadata() {
+    setStatus('Carregado — pronto para reproduzir');
+  }
+
+  function onCanPlay() {
+    setStatus('Pronto para reproduzir');
+  }
+
+  // Bind events
+  element.addEventListener('error', onError);
+  element.addEventListener('loadedmetadata', onLoadedMetadata);
+  element.addEventListener('canplay', onCanPlay);
+
+  // Retry button handler
+  retryBtn.addEventListener('click', () => {
+    sourceIndex = 0; attempt = 0;
+    tryCurrentSource();
+  });
+
+  // Tenta novamente quando voltar online
+  window.addEventListener('online', () => {
+    setStatus('Conexão restabelecida — tentando carregar...');
+    tryCurrentSource();
+  });
+
+  window.addEventListener('offline', () => {
+    setStatus('Offline — verifique sua Wi-Fi', true);
+  });
+
+  // Inicia a primeira tentativa (mas não autoplay forçado)
+  tryCurrentSource();
+}
+
+// Inicializa todos os players com atributo id começando por video-*
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('video[id^="video-"]').forEach(v => {
+    retryVideoLoad(v, { maxAttemptsPerSource: 2, baseDelay: 700 });
+  });
+});
+</script>
+
+<style>
+/* Estilinha mínima para feedback */
+.video-card { max-width:720px; margin:1rem auto; }
+.video-player { width:100%; height:auto; background:#000; display:block; }
+.video-status { font-family: Arial, sans-serif; font-size:0.95rem; margin-top:0.4rem; color:#333; display:flex; gap:10px; align-items:center; }
+.retry-btn { padding:6px 10px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+</style>
+</body>
+<body>
     <header>Os melhores filmes de 2025</header>
     <h1>VEJA AQUI NESSE SITE OS MELHORES FILMES DE 2025</h1>
     <p>#filmes</p>
