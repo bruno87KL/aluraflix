@@ -85,7 +85,104 @@
 </script>
 
 </body>
-    
+<body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vídeos por Categoria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .filter-btns {
+            margin-bottom: 20px;
+        }
+
+        .filter-btns button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .filter-btns button:hover {
+            background: #217dbb;
+        }
+
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .video-item {
+            width: 300px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        iframe {
+            width: 100%;
+            height: 180px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Galeria de Vídeos</h1>
+
+    <div class="filter-btns">
+        <button onclick="filterVideos('all')">Todos</button>
+        <button onclick="filterVideos('musica')">Música</button>
+        <button onclick="filterVideos('tecnologia')">Tecnologia</button>
+        <button onclick="filterVideos('esportes')">Esportes</button>
+    </div>
+
+    <div class="video-container">
+        <div class="video-item musica">
+            <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4" allowfullscreen></iframe>
+            <p>Música 1</p>
+        </div>
+        <div class="video-item tecnologia">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+            <p>Tecnologia 1</p>
+        </div>
+        <div class="video-item esportes">
+            <iframe src="https://www.youtube.com/embed/XGSy3_Czz8k" allowfullscreen></iframe>
+            <p>Esporte 1</p>
+        </div>
+        <div class="video-item musica">
+            <iframe src="https://www.youtube.com/embed/tgbNymZ7vqY" allowfullscreen></iframe>
+            <p>Música 2</p>
+        </div>
+        <div class="video-item tecnologia">
+            <iframe src="https://www.youtube.com/embed/ysz5S6PUM-U" allowfullscreen></iframe>
+            <p>Tecnologia 2</p>
+        </div>
+    </div>
+
+    <script>
+        function filterVideos(category) {
+            let videos = document.querySelectorAll('.video-item');
+            videos.forEach(video =>                      
 <!DOCTYPE html>
    <html lang="pt-BR">
    <head>
