@@ -33,6 +33,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0;
     box-shadow: 0 6px 18px rgba(0,0,0,0.35);
     transition: background .2s, opacity .3s;
     z-index: 999;
@@ -95,9 +96,238 @@
     background:#fff;
     cursor:pointer;
   }
-
-  /* Pesquisa */
+</style>
+</head>
+<body>
+<title>Pesquisa no Site</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
   .search-container {
     position: relative;
-    max-width: 400px
+    max-width: 400px;
+    margin-bottom: 20px;
+  }
+  .search-container input {
+    width: 100%;
+    padding: 10px 35px 10px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  .search-container .icon {
+    position: absolute;
+    right: 10px;
+    top: 9px;
+    font-size: 18px;
+    color: #555;
+  }
+  .item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  .hidden {
+    display: none;
+  }
+</style>
+</head>
+<body>
 
+<h1>Minha Lista de Conteúdos</h1>
+
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Pesquisar...">
+  <span class="icon">🔍</span>
+</div>
+
+<div id="list">
+  <div class="item">Tutorial de HTML</div>
+  <div class="item">Introdução ao CSS</div>
+  <div class="item">JavaScript Básico</div>
+  <div class="item">Como usar GitHub Pages</div>
+  <div class="item">SEO para iniciantes</div>
+  <div class="item">Projeto de Portfólio</div>
+</div>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const items = document.querySelectorAll('.item');
+
+  searchInput.addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.classList.toggle('hidden', !text.includes(query));
+    });
+  });
+</script>
+
+</body>
+</html>
+<h1>Streamix</h1>
+<p>Clique no botão para trocar o fundo.</p>
+<button onclick="toggleTheme()">🌙 Mudar Tema</button>
+
+<!-- Botões de scroll -->
+<button id="upBtn" class="scroll-btn" aria-label="Rolar para cima">▲</button>
+<button id="downBtn" class="scroll-btn" aria-label="Rolar para baixo">▼</button>
+
+<!-- Botões de filtro -->
+<div class="filter-btns">
+  <button onclick="filterVideos('all')">Todos</button>
+  <button onclick="filterVideos('filmes')">Filmes</button>
+  <button onclick="filterVideos('games')">Games</button>
+  <button onclick="filterVideos('jogos')">Jogos</button>
+  <button onclick="filterVideos('unboxing')">Unboxing</button>
+  <button onclick="filterVideos('musica')">Música</button>
+</div>
+
+<!-- Lista de vídeos -->
+<div class="video-container">
+  <div class="video-item filmes">
+    <iframe src="https://www.youtube.com/embed/4Ggu15Ff4uY" allowfullscreen></iframe>
+    <p>Filme 1</p>
+  </div>
+  <div class="video-item games">
+    <iframe src="https://www.youtube.com/embed/3C0plcVvTZ4" allowfullscreen></iframe>
+    <p>Game 1</p>
+  </div>
+  <div class="video-item jogos">
+    <iframe src="https://www.youtube.com/embed/pc9xSXuRKZg" allowfullscreen></iframe>
+    <p>Jogo 1</p>
+  </div>
+  <div class="video-item unboxing">
+    <iframe src="https://www.youtube.com/embed/xfrWgAnzEdE" allowfullscreen></iframe>
+    <p>Unboxing 1</p>
+  </div>
+  <div class="video-item musica">
+    <iframe src="https://www.youtube.com/embed/lMTs0Yyerb4" allowfullscreen></iframe>
+    <p>Música 1</p>
+  </div>
+</div>
+
+<!-- Vídeo local com retry automático -->
+<figure class="video-card" data-video-id="categoria1">
+  <video id="video-categoria1" class="video-player" controls preload="metadata"
+         playsinline poster="assets/poster-categoria1.jpg" muted crossorigin="anonymous">
+    <source data-res="360" src="videos/categoria1-360.mp4" type="video/mp4">
+    <source data-res="720" src="videos/categoria1-720.mp4" type="video/mp4">
+    <source data-res="1080" src="videos/categoria1-1080.mp4" type="video/mp4">
+    <source data-res="720" src="videos/categoria1-720.webm" type="video/webm">
+    Seu navegador não suporta vídeo HTML5.
+  </video>
+  <figcaption class="video-status" id="status-categoria1">
+    <span class="msg">Pronto</span>
+    <button class="retry-btn" style="display:none">Tentar novamente</button>
+  </figcaption>
+</figure>
+
+<script>
+/* Troca de tema */
+function toggleTheme() {
+  document.body.classList.toggle("dark-mode");
+}
+
+/* Botões de rolagem */
+const up = document.getElementById("upBtn");
+const down = document.getElementById("downBtn");
+const scrollAmount = 250;
+function updateVisibility() {
+  const scrollY = window.scrollY;
+  const maxY = document.documentElement.scrollHeight - window.innerHeight;
+  up.classList.toggle("hidden", scrollY <= 5);
+  down.classList.toggle("hidden", scrollY >= maxY - 5);
+}
+up.addEventListener("click", () => window.scrollBy({ top: -scrollAmount, behavior: "smooth" }));
+down.addEventListener("click", () => window.scrollBy({ top: scrollAmount, behavior: "smooth" }));
+window.addEventListener("scroll", updateVisibility);
+window.addEventListener("load", updateVisibility);
+window.addEventListener("resize", updateVisibility);
+
+/* Filtro de vídeos */
+function filterVideos(category) {
+  let videos = document.querySelectorAll('.video-item');
+  videos.forEach(video => {
+    if (category === 'all' || video.classList.contains(category)) {
+      video.style.display = 'block';
+    } else {
+      video.style.display = 'none';
+    }
+  });
+}
+
+/* Retry automático do vídeo local */
+function retryVideoLoad(element, opts = {}) {
+  const maxAttemptsPerSource = opts.maxAttemptsPerSource || 2;
+  const baseDelay = opts.baseDelay || 700;
+  const statusEl = document.getElementById('status-' + element.id.split('video-')[1]);
+  const retryBtn = statusEl.querySelector('.retry-btn');
+  const msgEl = statusEl.querySelector('.msg');
+  const sources = Array.from(element.querySelectorAll('source')).map(s => ({
+    src: s.getAttribute('src'),
+    type: s.getAttribute('type'),
+    res: s.getAttribute('data-res')
+  }));
+  let sourceIndex = 0, attempt = 0;
+
+  function setStatus(text, showRetry=false) {
+    msgEl.textContent = text;
+    retryBtn.style.display = showRetry ? 'inline-block' : 'none';
+  }
+
+  function tryCurrentSource() {
+    if (!navigator.onLine) {
+      setStatus('Sem conexão. Aguardando rede...', true);
+      return;
+    }
+    const current = sources[sourceIndex];
+    if (!current) {
+      setStatus('Erro ao carregar o vídeo. Nenhuma fonte válida.', true);
+      return;
+    }
+    setStatus(Carregando ${current.res}p... (tentativa ${attempt+1}));
+    element.pause();
+    while (element.firstChild) element.removeChild(element.firstChild);
+    const srcEl = document.createElement('source');
+    srcEl.src = current.src;
+    srcEl.type = current.type || 'video/mp4';
+    element.appendChild(srcEl);
+    element.load();
+    const playPromise = element.play();
+    if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(()=>{});
+  }
+
+  function onError() {
+    attempt++;
+    if (attempt <= maxAttemptsPerSource) {
+      const delay = Math.min(5000, baseDelay * Math.pow(2, attempt));
+      setStatus(Erro ao carregar (tentando de novo em ${Math.round(delay/1000)}s)...);
+      setTimeout(tryCurrentSource, delay);
+      return;
+    }
+    sourceIndex++;
+    attempt = 0;
+    if (sourceIndex < sources.length) {
+      setStatus('Tentando fonte alternativa...');
+      setTimeout(tryCurrentSource, 500);
+    } else {
+      setStatus('Todas as fontes falharam — verifique sua conexão.', true);
+    }
+  }
+
+  element.addEventListener('error', onError);
+  element.addEventListener('loadedmetadata', () => setStatus('Carregado — pronto'));
+  element.addEventListener('canplay', () => setStatus('Pronto para reproduzir'));
+  retryBtn.addEventListener('click', () => { sourceIndex = 0; attempt = 0; tryCurrentSource(); });
+  window.addEventListener('online', () => { setStatus('Conexão restabelecida — tentando...'); tryCurrentSource(); });
+  window.addEventListener('offline', () => setStatus('Offline — verifique sua Wi-Fi', true));
+  tryCurrentSource();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('video[id^="video-"]').forEach(v => {
+    retryVideoLoad(v, { maxAttemptsPerSource: 2, baseDelay: 700 });
+  });
+});
+</script>
+
+</body>
+</html>
