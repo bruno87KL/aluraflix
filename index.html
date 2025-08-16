@@ -13,10 +13,7 @@
     text-align: center;
     transition: all 0.3s ease;
   }
-  .dark-mode {
-    background-color: black;
-    color: white;
-  }
+  .dark-mode { background-color: black; color: white; }
 
   /* Botões de rolagem */
   .scroll-btn {
@@ -96,16 +93,12 @@
     background:#fff;
     cursor:pointer;
   }
-</style>
-</head>
-<body>
-<title>Pesquisa no Site</title>
-<style>
-  body { font-family: Arial, sans-serif; padding: 20px; }
+
+  /* Pesquisa */
   .search-container {
     position: relative;
     max-width: 400px;
-    margin-bottom: 20px;
+    margin: 20px auto;
   }
   .search-container input {
     width: 100%;
@@ -124,15 +117,16 @@
     padding: 10px;
     border-bottom: 1px solid #ddd;
   }
-  .hidden {
-    display: none;
-  }
+  .hidden-item { display: none; }
 </style>
 </head>
+
 <body>
+<h1>Streamix</h1>
+<p>Clique no botão para trocar o fundo.</p>
+<button onclick="toggleTheme()">🌙 Mudar Tema</button>
 
-<h1>Minha Lista de Conteúdos</h1>
-
+<!-- Pesquisa -->
 <div class="search-container">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
   <span class="icon">🔍</span>
@@ -146,25 +140,6 @@
   <div class="item">SEO para iniciantes</div>
   <div class="item">Projeto de Portfólio</div>
 </div>
-
-<script>
-  const searchInput = document.getElementById('searchInput');
-  const items = document.querySelectorAll('.item');
-
-  searchInput.addEventListener('input', function() {
-    const query = this.value.toLowerCase();
-    items.forEach(item => {
-      const text = item.textContent.toLowerCase();
-      item.classList.toggle('hidden', !text.includes(query));
-    });
-  });
-</script>
-
-</body>
-</html>
-<h1>Streamix</h1>
-<p>Clique no botão para trocar o fundo.</p>
-<button onclick="toggleTheme()">🌙 Mudar Tema</button>
 
 <!-- Botões de scroll -->
 <button id="upBtn" class="scroll-btn" aria-label="Rolar para cima">▲</button>
@@ -204,7 +179,7 @@
   </div>
 </div>
 
-<!-- Vídeo local com retry automático -->
+<!-- Vídeo local -->
 <figure class="video-card" data-video-id="categoria1">
   <video id="video-categoria1" class="video-player" controls preload="metadata"
          playsinline poster="assets/poster-categoria1.jpg" muted crossorigin="anonymous">
@@ -226,6 +201,17 @@ function toggleTheme() {
   document.body.classList.toggle("dark-mode");
 }
 
+/* Pesquisa */
+const searchInput = document.getElementById('searchInput');
+const items = document.querySelectorAll('.item');
+searchInput.addEventListener('input', function() {
+  const query = this.value.toLowerCase();
+  items.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.classList.toggle('hidden-item', !text.includes(query));
+  });
+});
+
 /* Botões de rolagem */
 const up = document.getElementById("upBtn");
 const down = document.getElementById("downBtn");
@@ -246,15 +232,11 @@ window.addEventListener("resize", updateVisibility);
 function filterVideos(category) {
   let videos = document.querySelectorAll('.video-item');
   videos.forEach(video => {
-    if (category === 'all' || video.classList.contains(category)) {
-      video.style.display = 'block';
-    } else {
-      video.style.display = 'none';
-    }
+    video.style.display = (category === 'all' || video.classList.contains(category)) ? 'block' : 'none';
   });
 }
 
-/* Retry automático do vídeo local */
+/* Retry automático do vídeo */
 function retryVideoLoad(element, opts = {}) {
   const maxAttemptsPerSource = opts.maxAttemptsPerSource || 2;
   const baseDelay = opts.baseDelay || 700;
@@ -283,7 +265,7 @@ function retryVideoLoad(element, opts = {}) {
       setStatus('Erro ao carregar o vídeo. Nenhuma fonte válida.', true);
       return;
     }
-    setStatus(Carregando ${current.res}p... (tentativa ${attempt+1}));
+    setStatus(`Carregando ${current.res}p... (tentativa ${attempt+1})`);
     element.pause();
     while (element.firstChild) element.removeChild(element.firstChild);
     const srcEl = document.createElement('source');
@@ -299,7 +281,7 @@ function retryVideoLoad(element, opts = {}) {
     attempt++;
     if (attempt <= maxAttemptsPerSource) {
       const delay = Math.min(5000, baseDelay * Math.pow(2, attempt));
-      setStatus(Erro ao carregar (tentando de novo em ${Math.round(delay/1000)}s)...);
+      setStatus(`Erro ao carregar (tentando de novo em ${Math.round(delay/1000)}s)...`);
       setTimeout(tryCurrentSource, delay);
       return;
     }
@@ -328,7 +310,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-
 </body>
 <body>
 
