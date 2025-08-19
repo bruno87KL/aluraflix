@@ -1,205 +1,183 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Streamix</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Streamix</title>
+  <style>
+    /* ================== ESTILOS GERAIS ================== */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .dark-mode { background-color: black; color: white; }
 
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    padding: 20px;
-    text-align: center;
-    transition: all 0.3s ease;
-  }
-  .dark-mode { background-color: black; color: white; }
+    /* LOGO */
+    .logo-xl { width: 320px; max-width: 100%; margin: 20px auto; display:block; }
 
-  /* Botões de rolagem */
-  .scroll-btn {
-    position: fixed;
-    right: 16px;
-    width: 42px;
-    height: 42px;
-    background: rgba(0,0,0,0.55);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    font-size: 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-    transition: background .2s, opacity .3s;
-    z-index: 999;
-    backdrop-filter: blur(4px);
-  }
-  .scroll-btn:hover { background: rgba(0,0,0,0.75); }
-  #upBtn { bottom: 80px; }
-  #downBtn { bottom: 20px; }
-  .hidden { opacity: 0; pointer-events: none; }
+    /* Botões de rolagem */
+    .scroll-btn {
+      position: fixed;
+      right: 16px;
+      width: 42px;
+      height: 42px;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      transition: background .2s, opacity .3s;
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+    .scroll-btn:hover { background: rgba(0,0,0,0.75); }
+    #upBtn { bottom: 80px; }
+    #downBtn { bottom: 20px; }
+    .hidden { opacity: 0; pointer-events: none; }
 
-  /* Filtro de vídeos */
-  .filter-btns { margin-bottom: 20px; }
-  .filter-btns button {
-    padding: 10px 15px;
-    margin: 5px;
-    border: none;
-    background: #3498db;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background 0.3s;
-  }
-  .filter-btns button:hover { background: #217dbb; }
+    /* Pesquisa */
+    .search-container {
+      position: relative;
+      max-width: 400px;
+      margin: 20px auto;
+    }
+    .search-container input {
+      width: 100%;
+      padding: 10px 35px 10px 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .search-container .icon {
+      position: absolute;
+      right: 10px;
+      top: 9px;
+      font-size: 18px;
+      color: #555;
+    }
+    .item {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .hidden-item { display: none; }
 
-  .video-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-  }
-  .video-item {
-    width: 300px;
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  iframe {
-    width: 100%;
-    height: 180px;
-    border-radius: 5px;
-    border: none;
-  }
+    /* Filtro de vídeos */
+    .filter-btns { margin: 20px 0; }
+    .filter-btns button {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      background: #3498db;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .filter-btns button:hover { background: #217dbb; }
 
-  /* Status do vídeo local */
-  .video-card { max-width:720px; margin:1rem auto; }
-  .video-player { width:100%; height:auto; background:#000; display:block; }
-  .video-status {
-    font-size:0.95rem;
-    margin-top:0.4rem;
-    color:#333;
-    display:flex;
-    gap:10px;
-    align-items:center;
-    justify-content:center;
-  }
-  .retry-btn {
-    padding:6px 10px;
-    border-radius:6px;
-    border:1px solid #ccc;
-    background:#fff;
-    cursor:pointer;
-  }
-
-  /* Pesquisa */
-  .search-container {
-    position: relative;
-    max-width: 400px;
-    margin: 20px auto;
-  }
-  .search-container input {
-    width: 100%;
-    padding: 10px 35px 10px 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  .search-container .icon {
-    position: absolute;
-    right: 10px;
-    top: 9px;
-    font-size: 18px;
-    color: #555;
-  }
-  .item {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  .hidden-item { display: none; }
-</style>
+    .video-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+    .video-item {
+      width: 300px;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    iframe {
+      width: 100%;
+      height: 180px;
+      border-radius: 5px;
+      border: none;
+    }
+  </style>
 </head>
-
 <body>
-<h1>Streamix</h1>
-<p>Clique no botão para trocar o fundo.</p>
-<button onclick="toggleTheme()">🌙 Mudar Tema</button>
+  <!-- LOGO SVG -->
+  <svg class="logo-xl" viewBox="0 0 1100 220" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g-text" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#06b6d4"/>
+        <stop offset="50%" stop-color="#7c3aed"/>
+        <stop offset="100%" stop-color="#22c55e"/>
+      </linearGradient>
+    </defs>
+    <text x="200" y="130" font-size="88" font-weight="bold" fill="url(#g-text)">Streamix</text>
+    <circle cx="90" cy="110" r="70" fill="url(#g-text)" opacity="0.9"/>
+    <polygon points="70,80 130,110 70,140" fill="white"/>
+  </svg>
 
-<!-- Pesquisa -->
-<div class="search-container">
-  <input type="text" id="searchInput" placeholder="Pesquisar...">
-  <span class="icon">🔍</span>
-</div>
+  <p>Clique no botão para trocar o fundo.</p>
+  <button onclick="toggleTheme()">🌙 Mudar Tema</button>
 
-<div id="list">
-  <div class="item">Filme</div>
-  <div class="item">Games</div>
-  <div class="item">Jogos</div>
-  <div class="item">Unboxing</div>
-  <div class="item">Música</div>
-  <div class="item">Animes</div>
-</div>
-
-<!-- Botões de scroll -->
-<button id="upBtn" class="scroll-btn" aria-label="Rolar para cima">▲</button>
-<button id="downBtn" class="scroll-btn" aria-label="Rolar para baixo">▼</button>
-
-<!-- Botões de filtro -->
-<div class="filter-btns">
-  <button onclick="filterVideos('all')">Todos</button>
-  <button onclick="filterVideos('filmes')">Filmes</button>
-  <button onclick="filterVideos('games')">Games</button>
-  <button onclick="filterVideos('jogos')">Jogos</button>
-  <button onclick="filterVideos('unboxing')">Unboxing</button>
-  <button onclick="filterVideos('musica')">Música</button>
-  <button onclick="filterVideos('animes')">Animes</button>
-</div>
-
-<!-- Lista de vídeos -->
-<div class="video-container">
-  <div class="video-item filmes">
-    <iframe src="https://www.youtube.com/embed/4Ggu15Ff4uY" allowfullscreen></iframe>
-    <p>Filme 1</p>
+  <!-- Pesquisa -->
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Pesquisar...">
+    <span class="icon">🔍</span>
   </div>
-  <div class="video-item games">
-    <iframe src="https://www.youtube.com/embed/3C0plcVvTZ4" allowfullscreen></iframe>
-    <p>Game 1</p>
-  </div>
-  <div class="video-item jogos">
-    <iframe src="https://www.youtube.com/embed/pc9xSXuRKZg" allowfullscreen></iframe>
-    <p>Jogo 1</p>
-  </div>
-  <div class="video-item unboxing">
-    <iframe src="https://www.youtube.com/embed/xfrWgAnzEdE" allowfullscreen></iframe>
-    <p>Unboxing 1</p>
-  </div>
-  <div class="video-item musica">
-    <iframe src="https://www.youtube.com/embed/lMTs0Yyerb4" allowfullscreen></iframe>
-    <p>Música 1</p>
-   </div>
-  <div class="video-item animes">
-    <iframe src="https://www.youtube.com/embed/ZAAjSk1Kj2o" allowfullscreen></iframe>
-    <p>Animes 1</p>
-  </div>
-</div>
 
-<!-- Vídeo local -->
-<figure class="video-card" data-video-id="categoria1">
-  <video id="video-categoria1" class="video-player" controls preload="metadata"
-         playsinline poster="assets/poster-categoria1.jpg" muted crossorigin="anonymous">
-    <source data-res="360" src="videos/categoria1-360.mp4" type="video/mp4">
-    <source data-res="720" src="videos/categoria1-720.mp4" type="video/mp4">
-    <source data-res="1080" src="videos/categoria1-1080.mp4" type="video/mp4">
-    <source data-res="720" src="videos/categoria1-720.webm" type="video/webm">
-    Seu navegador não suporta vídeo HTML5.
-  </video>
-  <figcaption class="video-status" id="status-categoria1">
-    <span class="msg">Pronto</span>
-    <button class="retry-btn" style="display:none">Tentar novamente</button>
-  </figcaption>
-</figure>
+  <div id="list">
+    <div class="item">Filme</div>
+    <div class="item">Games</div>
+    <div class="item">Jogos</div>
+    <div class="item">Unboxing</div>
+    <div class="item">Música</div>
+    <div class="item">Animes</div>
+  </div>
+
+  <!-- Botões de scroll -->
+  <button id="upBtn" class="scroll-btn">▲</button>
+  <button id="downBtn" class="scroll-btn">▼</button>
+
+  <!-- Botões de filtro -->
+  <div class="filter-btns">
+    <button onclick="filterVideos('all')">Todos</button>
+    <button onclick="filterVideos('filmes')">Filmes</button>
+    <button onclick="filterVideos('games')">Games</button>
+    <button onclick="filterVideos('jogos')">Jogos</button>
+    <button onclick="filterVideos('unboxing')">Unboxing</button>
+    <button onclick="filterVideos('musica')">Música</button>
+    <button onclick="filterVideos('animes')">Animes</button>
+  </div>
+
+  <!-- Lista de vídeos -->
+  <div class="video-container">
+    <div class="video-item filmes">
+      <iframe src="https://www.youtube.com/embed/4Ggu15Ff4uY" allowfullscreen></iframe>
+      <p>Filme 1</p>
+    </div>
+    <div class="video-item games">
+      <iframe src="https://www.youtube.com/embed/3C0plcVvTZ4" allowfullscreen></iframe>
+      <p>Game 1</p>
+    </div>
+    <div class="video-item jogos">
+      <iframe src="https://www.youtube.com/embed/pc9xSXuRKZg" allowfullscreen></iframe>
+      <p>Jogo 1</p>
+    </div>
+    <div class="video-item unboxing">
+      <iframe src="https://www.youtube.com/embed/xfrWgAnzEdE" allowfullscreen></iframe>
+      <p>Unboxing 1</p>
+    </div>
+    <div class="video-item musica">
+      <iframe src="https://www.youtube.com/embed/lMTs0Yyerb4" allowfullscreen></iframe>
+      <p>Música 1</p>
+    </div>
+    <div class="video-item animes">
+      <iframe src="https://www.youtube.com/embed/ZAAjSk1Kj2o" allowfullscreen></iframe>
+      <p>Animes 1</p>
+    </div>
+  </div>
 
 <script>
 /* Troca de tema */
@@ -232,89 +210,6 @@ up.addEventListener("click", () => window.scrollBy({ top: -scrollAmount, behavio
 down.addEventListener("click", () => window.scrollBy({ top: scrollAmount, behavior: "smooth" }));
 window.addEventListener("scroll", updateVisibility);
 window.addEventListener("load", updateVisibility);
-window.addEventListener("resize", updateVisibility);
-
-/* Filtro de vídeos */
-function filterVideos(category) {
-  let videos = document.querySelectorAll('.video-item');
-  videos.forEach(video => {
-    video.style.display = (category === 'all' || video.classList.contains(category)) ? 'block' : 'none';
-  });
-}
-
-/* Retry automático do vídeo */
-function retryVideoLoad(element, opts = {}) {
-  const maxAttemptsPerSource = opts.maxAttemptsPerSource || 2;
-  const baseDelay = opts.baseDelay || 700;
-  const statusEl = document.getElementById('status-' + element.id.split('video-')[1]);
-  const retryBtn = statusEl.querySelector('.retry-btn');
-  const msgEl = statusEl.querySelector('.msg');
-  const sources = Array.from(element.querySelectorAll('source')).map(s => ({
-    src: s.getAttribute('src'),
-    type: s.getAttribute('type'),
-    res: s.getAttribute('data-res')
-  }));
-  let sourceIndex = 0, attempt = 0;
-
-  function setStatus(text, showRetry=false) {
-    msgEl.textContent = text;
-    retryBtn.style.display = showRetry ? 'inline-block' : 'none';
-  }
-
-  function tryCurrentSource() {
-    if (!navigator.onLine) {
-      setStatus('Sem conexão. Aguardando rede...', true);
-      return;
-    }
-    const current = sources[sourceIndex];
-    if (!current) {
-      setStatus('Erro ao carregar o vídeo. Nenhuma fonte válida.', true);
-      return;
-    }
-    setStatus(`Carregando ${current.res}p... (tentativa ${attempt+1})`);
-    element.pause();
-    while (element.firstChild) element.removeChild(element.firstChild);
-    const srcEl = document.createElement('source');
-    srcEl.src = current.src;
-    srcEl.type = current.type || 'video/mp4';
-    element.appendChild(srcEl);
-    element.load();
-    const playPromise = element.play();
-    if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(()=>{});
-  }
-
-  function onError() {
-    attempt++;
-    if (attempt <= maxAttemptsPerSource) {
-      const delay = Math.min(5000, baseDelay * Math.pow(2, attempt));
-      setStatus(`Erro ao carregar (tentando de novo em ${Math.round(delay/1000)}s)...`);
-      setTimeout(tryCurrentSource, delay);
-      return;
-    }
-    sourceIndex++;
-    attempt = 0;
-    if (sourceIndex < sources.length) {
-      setStatus('Tentando fonte alternativa...');
-      setTimeout(tryCurrentSource, 500);
-    } else {
-      setStatus('Todas as fontes falharam — verifique sua conexão.', true);
-    }
-  }
-
-  element.addEventListener('error', onError);
-  element.addEventListener('loadedmetadata', () => setStatus('Carregado — pronto'));
-  element.addEventListener('canplay', () => setStatus('Pronto para reproduzir'));
-  retryBtn.addEventListener('click', () => { sourceIndex = 0; attempt = 0; tryCurrentSource(); });
-  window.addEventListener('online', () => { setStatus('Conexão restabelecida — tentando...'); tryCurrentSource(); });
-  window.addEventListener('offline', () => setStatus('Offline — verifique sua Wi-Fi', true));
-  tryCurrentSource();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('video[id^="video-"]').forEach(v => {
-    retryVideoLoad(v, { maxAttemptsPerSource: 2, baseDelay: 700 });
-  });
-});
 </script>
 </body>
 </html>
